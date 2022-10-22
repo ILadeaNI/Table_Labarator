@@ -1,0 +1,327 @@
+-- DROP SCHEMA "Table_laba";
+
+CREATE SCHEMA "Table_laba" AUTHORIZATION user22;
+-- "Table_laba".insurance definition
+
+-- Drop table
+
+-- DROP TABLE "Table_laba".insurance;
+
+CREATE TABLE "Table_laba".insurance (
+	id_ins int4 NOT NULL,
+	title text NULL,
+	inn int4 NULL,
+	address text NULL,
+	rs int4 NULL,
+	bik int4 NULL,
+	CONSTRAINT insurance_pk PRIMARY KEY (id_ins)
+);
+
+-- Permissions
+
+ALTER TABLE "Table_laba".insurance OWNER TO user22;
+GRANT ALL ON TABLE "Table_laba".insurance TO user22;
+
+
+-- "Table_laba".policy_type definition
+
+-- Drop table
+
+-- DROP TABLE "Table_laba".policy_type;
+
+CREATE TABLE "Table_laba".policy_type (
+	id_type_pol int4 NOT NULL,
+	title text NULL,
+	CONSTRAINT policy_type_pk PRIMARY KEY (id_type_pol)
+);
+
+-- Permissions
+
+ALTER TABLE "Table_laba".policy_type OWNER TO user22;
+GRANT ALL ON TABLE "Table_laba".policy_type TO user22;
+
+
+-- "Table_laba"."role" definition
+
+-- Drop table
+
+-- DROP TABLE "Table_laba"."role";
+
+CREATE TABLE "Table_laba"."role" (
+	id_role int4 NOT NULL,
+	title text NULL,
+	CONSTRAINT role_pk PRIMARY KEY (id_role)
+);
+
+-- Permissions
+
+ALTER TABLE "Table_laba"."role" OWNER TO user22;
+GRANT ALL ON TABLE "Table_laba"."role" TO user22;
+
+
+-- "Table_laba".service definition
+
+-- Drop table
+
+-- DROP TABLE "Table_laba".service;
+
+CREATE TABLE "Table_laba".service (
+	id_ser int4 NOT NULL,
+	title varchar NULL,
+	price numeric NULL,
+	code int4 NULL,
+	term date NULL,
+	CONSTRAINT service_pk PRIMARY KEY (id_ser)
+);
+
+-- Permissions
+
+ALTER TABLE "Table_laba".service OWNER TO user22;
+GRANT ALL ON TABLE "Table_laba".service TO user22;
+
+
+-- "Table_laba".status definition
+
+-- Drop table
+
+-- DROP TABLE "Table_laba".status;
+
+CREATE TABLE "Table_laba".status (
+	id_stat int4 NOT NULL,
+	stat_name text NULL,
+	CONSTRAINT status_pk PRIMARY KEY (id_stat)
+);
+
+-- Permissions
+
+ALTER TABLE "Table_laba".status OWNER TO user22;
+GRANT ALL ON TABLE "Table_laba".status TO user22;
+
+
+-- "Table_laba".type_lab definition
+
+-- Drop table
+
+-- DROP TABLE "Table_laba".type_lab;
+
+CREATE TABLE "Table_laba".type_lab (
+	id_type_lab int4 NOT NULL,
+	"type" int4 NULL,
+	CONSTRAINT type_lab_pk PRIMARY KEY (id_type_lab)
+);
+
+-- Permissions
+
+ALTER TABLE "Table_laba".type_lab OWNER TO user22;
+GRANT ALL ON TABLE "Table_laba".type_lab TO user22;
+
+
+-- "Table_laba"."order" definition
+
+-- Drop table
+
+-- DROP TABLE "Table_laba"."order";
+
+CREATE TABLE "Table_laba"."order" (
+	id_ord int4 NOT NULL,
+	ord_date date NULL,
+	id_stat int4 NOT NULL,
+	CONSTRAINT order_pk PRIMARY KEY (id_ord),
+	CONSTRAINT order_fk FOREIGN KEY (id_stat) REFERENCES "Table_laba".status(id_stat)
+);
+
+-- Permissions
+
+ALTER TABLE "Table_laba"."order" OWNER TO user22;
+GRANT ALL ON TABLE "Table_laba"."order" TO user22;
+
+
+-- "Table_laba"."user" definition
+
+-- Drop table
+
+-- DROP TABLE "Table_laba"."user";
+
+CREATE TABLE "Table_laba"."user" (
+	id_user int4 NOT NULL,
+	"name" text NULL,
+	login varchar NULL,
+	"password" varchar NULL,
+	ip varchar NULL,
+	lastenter date NULL,
+	id_role int4 NOT NULL,
+	CONSTRAINT user_pk PRIMARY KEY (id_user),
+	CONSTRAINT user_fk FOREIGN KEY (id_role) REFERENCES "Table_laba"."role"(id_role)
+);
+
+-- Permissions
+
+ALTER TABLE "Table_laba"."user" OWNER TO user22;
+GRANT ALL ON TABLE "Table_laba"."user" TO user22;
+
+
+-- "Table_laba".accountant definition
+
+-- Drop table
+
+-- DROP TABLE "Table_laba".accountant;
+
+CREATE TABLE "Table_laba".accountant (
+	id_acc int4 NOT NULL,
+	acc_name text NULL,
+	id_user int4 NOT NULL,
+	CONSTRAINT accountant_pk PRIMARY KEY (id_acc),
+	CONSTRAINT accountant_fk FOREIGN KEY (id_user) REFERENCES "Table_laba"."user"(id_user)
+);
+
+-- Permissions
+
+ALTER TABLE "Table_laba".accountant OWNER TO user22;
+GRANT ALL ON TABLE "Table_laba".accountant TO user22;
+
+
+-- "Table_laba".labarotory_assistant definition
+
+-- Drop table
+
+-- DROP TABLE "Table_laba".labarotory_assistant;
+
+CREATE TABLE "Table_laba".labarotory_assistant (
+	id_lab_ass int4 NOT NULL,
+	id_user int4 NOT NULL,
+	id_type_lab int4 NOT NULL,
+	CONSTRAINT labarotory_assistant_pk PRIMARY KEY (id_lab_ass),
+	CONSTRAINT labarotory_assistant_fk FOREIGN KEY (id_user) REFERENCES "Table_laba"."user"(id_user),
+	CONSTRAINT labarotory_assistant_fk1 FOREIGN KEY (id_type_lab) REFERENCES "Table_laba".type_lab(id_type_lab)
+);
+
+-- Permissions
+
+ALTER TABLE "Table_laba".labarotory_assistant OWNER TO user22;
+GRANT ALL ON TABLE "Table_laba".labarotory_assistant TO user22;
+
+
+-- "Table_laba".ord_ser definition
+
+-- Drop table
+
+-- DROP TABLE "Table_laba".ord_ser;
+
+CREATE TABLE "Table_laba".ord_ser (
+	id_ord_ser int4 NOT NULL,
+	id_ser int4 NOT NULL,
+	id_ord int4 NOT NULL,
+	id_stat int4 NOT NULL,
+	CONSTRAINT ord_ser_pk PRIMARY KEY (id_ord_ser),
+	CONSTRAINT ord_ser_fk FOREIGN KEY (id_ser) REFERENCES "Table_laba".service(id_ser),
+	CONSTRAINT ord_ser_fk1 FOREIGN KEY (id_ord) REFERENCES "Table_laba"."order"(id_ord),
+	CONSTRAINT ord_ser_fk2 FOREIGN KEY (id_stat) REFERENCES "Table_laba".status(id_stat)
+);
+
+-- Permissions
+
+ALTER TABLE "Table_laba".ord_ser OWNER TO user22;
+GRANT ALL ON TABLE "Table_laba".ord_ser TO user22;
+
+
+-- "Table_laba".patient definition
+
+-- Drop table
+
+-- DROP TABLE "Table_laba".patient;
+
+CREATE TABLE "Table_laba".patient (
+	id_pat int4 NOT NULL,
+	"name" text NULL,
+	birth date NULL,
+	pass_s int4 NULL,
+	pass_n int4 NULL,
+	tel_num int4 NULL,
+	email text NULL,
+	id_user int4 NOT NULL,
+	CONSTRAINT patient_pk PRIMARY KEY (id_pat),
+	CONSTRAINT patient_fk FOREIGN KEY (id_user) REFERENCES "Table_laba"."user"(id_user)
+);
+
+-- Permissions
+
+ALTER TABLE "Table_laba".patient OWNER TO user22;
+GRANT ALL ON TABLE "Table_laba".patient TO user22;
+
+
+-- "Table_laba".ser_com definition
+
+-- Drop table
+
+-- DROP TABLE "Table_laba".ser_com;
+
+CREATE TABLE "Table_laba".ser_com (
+	id_com_ser int4 NOT NULL,
+	id_ser int4 NOT NULL,
+	id_lab_ass int4 NOT NULL,
+	id_pat int4 NOT NULL,
+	analyzer int4 NOT NULL,
+	id_ord_ser int4 NOT NULL,
+	CONSTRAINT ser_com_pk PRIMARY KEY (id_com_ser),
+	CONSTRAINT ser_com_fk FOREIGN KEY (id_ord_ser) REFERENCES "Table_laba".ord_ser(id_ord_ser),
+	CONSTRAINT ser_com_fk_1 FOREIGN KEY (id_ser) REFERENCES "Table_laba".service(id_ser),
+	CONSTRAINT ser_com_fk_2 FOREIGN KEY (id_lab_ass) REFERENCES "Table_laba".labarotory_assistant(id_lab_ass),
+	CONSTRAINT ser_com_fk_3 FOREIGN KEY (id_pat) REFERENCES "Table_laba".patient(id_pat)
+);
+
+-- Permissions
+
+ALTER TABLE "Table_laba".ser_com OWNER TO user22;
+GRANT ALL ON TABLE "Table_laba".ser_com TO user22;
+
+
+-- "Table_laba"."Policy" definition
+
+-- Drop table
+
+-- DROP TABLE "Table_laba"."Policy";
+
+CREATE TABLE "Table_laba"."Policy" (
+	id_pol int4 NOT NULL,
+	id_pat int4 NOT NULL,
+	id_ins int4 NULL,
+	pol_num int4 NULL,
+	id_type_pol int4 NOT NULL,
+	CONSTRAINT policy_pk PRIMARY KEY (id_pol),
+	CONSTRAINT policy_fk FOREIGN KEY (id_pat) REFERENCES "Table_laba".patient(id_pat),
+	CONSTRAINT policy_fk_1 FOREIGN KEY (id_ins) REFERENCES "Table_laba".insurance(id_ins),
+	CONSTRAINT policy_fk_2 FOREIGN KEY (id_type_pol) REFERENCES "Table_laba".policy_type(id_type_pol)
+);
+
+-- Permissions
+
+ALTER TABLE "Table_laba"."Policy" OWNER TO user22;
+GRANT ALL ON TABLE "Table_laba"."Policy" TO user22;
+
+
+-- "Table_laba".lab_serv definition
+
+-- Drop table
+
+-- DROP TABLE "Table_laba".lab_serv;
+
+CREATE TABLE "Table_laba".lab_serv (
+	id_lab_ser int4 NOT NULL,
+	id_lab_ass int4 NOT NULL,
+	id_ser int4 NOT NULL,
+	CONSTRAINT lab_serv_pk PRIMARY KEY (id_lab_ser),
+	CONSTRAINT lab_serv_fk FOREIGN KEY (id_lab_ass) REFERENCES "Table_laba".labarotory_assistant(id_lab_ass),
+	CONSTRAINT lab_serv_fk_1 FOREIGN KEY (id_ser) REFERENCES "Table_laba".service(id_ser)
+);
+
+-- Permissions
+
+ALTER TABLE "Table_laba".lab_serv OWNER TO user22;
+GRANT ALL ON TABLE "Table_laba".lab_serv TO user22;
+
+
+
+
+-- Permissions
+
+GRANT ALL ON SCHEMA "Table_laba" TO user22;
